@@ -1,0 +1,6 @@
+@BigFiveAssessmentApi_HostAddress = http://localhost:5068
+
+GET {{BigFiveAssessmentApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
