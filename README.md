@@ -47,7 +47,7 @@ Ensure you have the following installed:
 ### **2️⃣ Clone Repository**
 ```sh
 https://github.com/BISHOPDAN/BigFiveAssessmentApi.git
-cd patient-management-api
+cd BigFiveAssessmentApi
 ```
 
 ### **3️⃣ Restore & Build**
