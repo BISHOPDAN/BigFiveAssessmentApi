@@ -1,12 +1,12 @@
 ﻿# Big Five Personality Assessment API (.NET 8)
 
-## Project Description
+## 📌 Project Description
 The **Big Five Personality Assessment API** is a RESTful service that simulates a HR screening 
 flow using the Big Five model. It accepts 20 Likert responses, scores the five traits (with
 reverse-scored items), classifies results (Low/Moderate/High), stores submissions in SQLite,
 and emails HTML reports to the candidate and TA team (via Papercut SMTP for local testing).
 
-## Features
+## 🚀 Features
 - **Submit Assessment**: Accept 20 Likert responses (1–5) with candidate info.
 
 - **Trait Scoring**: Reverse-scoring and scaling to 8–40; classification & descriptions.
@@ -21,7 +21,7 @@ and emails HTML reports to the candidate and TA team (via Papercut SMTP for loca
 
 ---
 
-## Project Structure
+## 🏗️ Project Structure
 ```
 BigFiveAssessmentApi/
 │── Controllers/                 # API Controllers (AssessmentsController)
