@@ -1,15 +1,15 @@
-# Big Five Personality Assessment API (.NET 8)
+﻿# Big Five Personality Assessment API (.NET 8)
 
-## ?? Project Description
+## Project Description
 The **Big Five Personality Assessment API** is a RESTful service that simulates a HR screening 
 flow using the Big Five model. It accepts 20 Likert responses, scores the five traits (with
 reverse-scored items), classifies results (Low/Moderate/High), stores submissions in SQLite,
 and emails HTML reports to the candidate and TA team (via Papercut SMTP for local testing).
 
-## ?? Features
-- **Submit Assessment**: Accept 20 Likert responses (1�5) with candidate info.
+## Features
+- **Submit Assessment**: Accept 20 Likert responses (1–5) with candidate info.
 
-- **Trait Scoring**: Reverse-scoring and scaling to 8�40; classification & descriptions.
+- **Trait Scoring**: Reverse-scoring and scaling to 8–40; classification & descriptions.
 
 - **Persistence**: Store submissions in SQLite via EF Core.
 
@@ -21,57 +21,57 @@ and emails HTML reports to the candidate and TA team (via Papercut SMTP for loca
 
 ---
 
-## ??? Project Structure
+## Project Structure
 ```
 BigFiveAssessmentApi/
-??? Controllers/                 # API Controllers (AssessmentsController)
-??? Data/                        # EF Core DbContext (AppDbContext)
-??? Dtos/                        # Request/Response DTOs
-??? IRepository/                 # Interfaces (IScoringRepository, IEmailSender)
-??? Repository/                  # Implementations (ScoringRepository, SmtpEmailSender)
-??? Models/                      # Entities & enums (Submission, Trait)
-??? Migrations/                  # EF Core migrations
-??? Program.cs                   # App configuration & DI setup
-??? appsettings.json             # Connection strings & Email config
-??? README.md                    # Project documentation
+│── Controllers/                 # API Controllers (AssessmentsController)
+│── Data/                        # EF Core DbContext (AppDbContext)
+│── Dtos/                        # Request/Response DTOs
+│── IRepository/                 # Interfaces (IScoringRepository, IEmailSender)
+│── Repository/                  # Implementations (ScoringRepository, SmtpEmailSender)
+│── Models/                      # Entities & enums (Submission, Trait)
+│── Migrations/                  # EF Core migrations
+│── Program.cs                   # App configuration & DI setup
+│── appsettings.json             # Connection strings & Email config
+│── README.md                    # Project documentation
 ```
 
 ---
 
-## ??? Setup & Installation
-### **1?? Prerequisites**
+## 🛠Setup & Installation
+### **1️⃣ Prerequisites**
 Ensure you have the following installed:
 - [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 - (Windows) Papercut SMTP (local mail catcher)
 
-### **2?? Clone Repository**
+### **2️⃣ Clone Repository**
 ```sh
-git clone https://github.com/BISHOPDAN/patient-management-api.git
+https://github.com/BISHOPDAN/BigFiveAssessmentApi.git
 cd patient-management-api
 ```
 
-### **3?? Restore & Build**
+### **3️⃣ Restore & Build**
 ```sh
 dotnet restore
 dotnet build
 ```
 
-### **4?? Database Migration**
+### **4️⃣ Database Migration**
 Ensure you have your database connection string set in `appsettings.json`, then run:
-- Option A � .NET CLI
+- Option A — .NET CLI
 ```sh
 dotnet ef database update
 ```
-- Option B � Visual Studio PMC
+- Option B — Visual Studio PMC
 ```sh
 Update-Database
 ```
 
-### **5?? Install & Start Papercut SMTP**
+### **5️⃣ Install & Start Papercut SMTP**
 
-Papercut SMTP is a local SMTP server for testing emails (emails don�t go to the internet, they�re just captured locally).
+Papercut SMTP is a local SMTP server for testing emails (emails don’t go to the internet, they’re just captured locally).
 
-#### ?? Windows
+#### 🔹 Windows
 - Download Papercut SMTP Service zip (Windows x64) from:
 [Papercut SMTP Releases](https://github.com/ChangemakerStudios/Papercut-SMTP/releases)
 - Extract, then from that folder:
@@ -79,7 +79,7 @@ Papercut SMTP is a local SMTP server for testing emails (emails don�t go to the 
 Papercut.Service.exe install
 Papercut.Service.exe start
 ```
-#### ?? Linux
+#### 🔹 Linux
 - Download the Linux build from:
 Papercut SMTP Releases
 
@@ -96,7 +96,7 @@ cd Papercut.Smtp.Service.*-linux-x64
 ```sh
 nohup ./Papercut.Service > papercut.log 2>&1 &
 ```
-#### ?? macOS
+#### 🔹 macOS
 - Download the macOS build from:
 Papercut SMTP Releases
 - Extract the tar.gz:
@@ -117,7 +117,7 @@ nohup ./Papercut.Service > papercut.log 2>&1 &
 
 ---
 
-## ?? API Endpoints
+## ⚙️ API Endpoints
 | Method | Endpoint | Description |
 |--------|----------|--------------|
 | `POST` | `/api/Assessments/submit` | Accept assessment, score, store, email reports |
@@ -141,25 +141,25 @@ nohup ./Papercut.Service > papercut.log 2>&1 &
 ---
 
 
-## ?? Key Design Decisions
-### **?? Clean Architecture**
+## 🎯 Key Design Decisions
+### **🔹 Clean Architecture**
 - **Separation of Concerns**: Business logic is encapsulated in repositories
 and as well data access, and API controllers handle request/response.
 - **Dependency Injection**: Enhances testability and maintainability.
 
-### **?? Database Choice**
+### **🔹 Database Choice**
 - Chose **Sqlite** for its scalability as a simple level for testing, but the repository
 layer is flexible to support **SQL Server** if needed.
 
-## ?? Future Improvements
-- ?Authentication & roles for admin endpoints
+## 💡 Future Improvements
+- ✅Authentication & roles for admin endpoints
 
-- ? Background email queue (e.g., hosted service)
+- ✅ Background email queue (e.g., hosted service)
 
-- ? Per-question analytics and dashboard JSON
+- ✅ Per-question analytics and dashboard JSON
 
-- ? Dockerfile & GitHub Actions CI
+- ✅ Dockerfile & GitHub Actions CI
 
-- ? Switchable SMTP providers (Gmail, Mailtrap, SendGrid)
+- ✅ Switchable SMTP providers (Gmail, Mailtrap, SendGrid)
 
 ---
