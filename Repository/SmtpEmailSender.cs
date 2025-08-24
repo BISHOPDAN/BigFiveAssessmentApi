@@ -13,16 +13,30 @@ namespace BigFiveAssessmentApi.Repository
 
         public async Task SendCandidateReportAsync(string to, string name, List<TraitScoreDto> scores)
         {
-            var msg = BaseMessage(to, $"Your Big Five Report, {name}");
-            msg.Body = new TextPart("html") { Text = RenderCandidateHtml(name, scores) };
-            await SendAsync(msg);
+            try
+            {
+                var msg = BaseMessage(to, $"Your Big Five Report, {name}");
+                msg.Body = new TextPart("html") { Text = RenderCandidateHtml(name, scores) };
+                await SendAsync(msg);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to send candidate report: {ex.Message}");
+            }
         }
 
         public async Task SendTaReportAsync(string to, string candidateName, string candidateEmail, List<int> responses, List<TraitScoreDto> scores)
         {
-            var msg = BaseMessage(to, $"[TA] Full Big Five Breakdown - {candidateName}");
-            msg.Body = new TextPart("html") { Text = RenderTaHtml(candidateName, candidateEmail, responses, scores) };
-            await SendAsync(msg);
+            try
+            {
+                var msg = BaseMessage(to, $"[TA] Full Big Five Breakdown - {candidateName}");
+                msg.Body = new TextPart("html") { Text = RenderTaHtml(candidateName, candidateEmail, responses, scores) };
+                await SendAsync(msg);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Failed to send TA report: {ex.Message}");
+            }
         }
 
         private MimeMessage BaseMessage(string to, string subject)
@@ -37,14 +51,21 @@ namespace BigFiveAssessmentApi.Repository
 
         private async Task SendAsync(MimeMessage msg)
         {
-            var host = _cfg["Email:SmtpHost"];
-            var port = int.Parse(_cfg["Email:SmtpPort"]!);
+            try
+            {
+                var host = _cfg["Email:SmtpHost"];
+                var port = int.Parse(_cfg["Email:SmtpPort"]!);
 
-            using var client = new SmtpClient();
-            await client.ConnectAsync(host, port, SecureSocketOptions.None);
+                using var client = new SmtpClient();
+                await client.ConnectAsync(host, port, SecureSocketOptions.None);
 
-            await client.SendAsync(msg);
-            await client.DisconnectAsync(true);
+                await client.SendAsync(msg);
+                await client.DisconnectAsync(true);
+            }
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Could not send email: {ex.Message}");
+            }
         }
 
         private static string RenderCandidateHtml(string name, List<TraitScoreDto> scores)

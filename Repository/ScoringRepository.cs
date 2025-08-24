@@ -4,65 +4,72 @@ using BigFiveAssessmentApi.Models;
 
 namespace BigFiveAssessmentApi.Repository
 {
-    public class ScoringRepository: IScoringRepository
+    public class ScoringRepository : IScoringRepository
     {
         private readonly Dictionary<int, (Trait trait, bool reverse)> _map = new()
-    {
-        // Q#: (Trait, reverse?) — reverse = true means 6 - response
-        {1,(Trait.Extraversion,false)},
-        {2,(Trait.Agreeableness,false)},
-        {3,(Trait.Conscientiousness,false)},
-        {4,(Trait.Neuroticism,false)},
-        {5,(Trait.Openness,false)},
-        {6,(Trait.Extraversion,true)},
-        {7,(Trait.Agreeableness,false)},
-        {8,(Trait.Conscientiousness,true)},
-        {9,(Trait.Neuroticism,false)},
-        {10,(Trait.Openness,false)},
-        {11,(Trait.Extraversion,false)},
-        {12,(Trait.Agreeableness,false)},
-        {13,(Trait.Conscientiousness,false)},
-        {14,(Trait.Neuroticism,false)},
-        {15,(Trait.Openness,false)},
-        {16,(Trait.Extraversion,true)},
-        {17,(Trait.Agreeableness,false)},
-        {18,(Trait.Conscientiousness,true)},
-        {19,(Trait.Neuroticism,true)},     // “I seldom feel blue” (reverse)
-        {20,(Trait.Openness,false)}
-    };
+        {
+            {1,(Trait.Extraversion,false)},
+            {2,(Trait.Agreeableness,false)},
+            {3,(Trait.Conscientiousness,false)},
+            {4,(Trait.Neuroticism,false)},
+            {5,(Trait.Openness,false)},
+            {6,(Trait.Extraversion,true)},
+            {7,(Trait.Agreeableness,false)},
+            {8,(Trait.Conscientiousness,true)},
+            {9,(Trait.Neuroticism,false)},
+            {10,(Trait.Openness,false)},
+            {11,(Trait.Extraversion,false)},
+            {12,(Trait.Agreeableness,false)},
+            {13,(Trait.Conscientiousness,false)},
+            {14,(Trait.Neuroticism,false)},
+            {15,(Trait.Openness,false)},
+            {16,(Trait.Extraversion,true)},
+            {17,(Trait.Agreeableness,false)},
+            {18,(Trait.Conscientiousness,true)},
+            {19,(Trait.Neuroticism,true)},
+            {20,(Trait.Openness,false)}
+        };
 
         public List<TraitScoreDto> Score(List<int> responses)
         {
-            if (responses == null || responses.Count != 20)
-                throw new ArgumentException("Exactly 20 responses required.");
-
-            var sums = Enum.GetValues<Trait>().ToDictionary(t => t, _ => 0);
-
-            for (int i = 0; i < 20; i++)
+            try
             {
-                var raw = responses[i];
-                if (raw < 1 || raw > 5) throw new ArgumentOutOfRangeException($"Response {i + 1} must be 1..5");
-                var (trait, reverse) = _map[i + 1];
-                var v = reverse ? 6 - raw : raw;      // reverse-code
-                sums[trait] += v;
-            }
+                if (responses == null || responses.Count != 20)
+                    throw new ApplicationException("Exactly 20 responses are required.");
 
-            // Convert to TraitScoreDto
-            var list = new List<TraitScoreDto>();
-            foreach (var (trait, raw) in sums)
-            {
-                var scaled = raw * 2; // 4..20 => 8..40
-                var level = scaled <= 20 ? "Low" : (scaled <= 31 ? "Moderate" : "High");
-                list.Add(new TraitScoreDto
+                var sums = Enum.GetValues<Trait>().ToDictionary(t => t, _ => 0);
+
+                for (int i = 0; i < 20; i++)
                 {
-                    Trait = trait,
-                    Raw = raw,
-                    Scaled = scaled,
-                    Level = level,
-                    Description = Describe(trait, level)
-                });
+                    var raw = responses[i];
+                    if (raw < 1 || raw > 5)
+                        throw new ApplicationException($"Response {i + 1} must be between 1 and 5.");
+
+                    var (trait, reverse) = _map[i + 1];
+                    var v = reverse ? 6 - raw : raw;
+                    sums[trait] += v;
+                }
+
+                var list = new List<TraitScoreDto>();
+                foreach (var (trait, raw) in sums)
+                {
+                    var scaled = raw * 2;
+                    var level = scaled <= 20 ? "Low" : (scaled <= 31 ? "Moderate" : "High");
+                    list.Add(new TraitScoreDto
+                    {
+                        Trait = trait,
+                        Raw = raw,
+                        Scaled = scaled,
+                        Level = level,
+                        Description = Describe(trait, level)
+                    });
+                }
+                return list.OrderBy(s => s.Trait.ToString()).ToList();
             }
-            return list.OrderBy(s => s.Trait.ToString()).ToList();
+            catch (Exception ex)
+            {
+                throw new ApplicationException($"Scoring failed: {ex.Message}");
+            }
         }
 
         private static string Describe(Trait t, string level) => (t, level) switch
